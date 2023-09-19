@@ -1,25 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { useState, useEffect } from "react";
+import { StarWarsPeople } from "./types/starwars.types";
 
 function App() {
+  const [people, setPeople] = useState<StarWarsPeople>();
+  useEffect(() => {
+    const getPeople = async (peopleNumber: number) => {
+      const apiResponse = await fetch(
+        `https://swapi.dev/api/people/${peopleNumber}`
+      );
+      const json = (await apiResponse.json()) as StarWarsPeople;
+      console.log("json--->", json);
+      setPeople(json);
+    };
+    getPeople(1); // as assignment said only first person hard coding this to 1
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Star Wars</h1>
+      <h3>{people && people.name}</h3>
+    </>
   );
 }
 

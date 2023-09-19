@@ -25,3 +25,29 @@ test("Renders 1st person name", async () => {
   const peopleElement = await screen.findByText(/Luke Skywalker/i);
   expect(peopleElement).toBeInTheDocument();
 });
+
+test("Handling 500 Error message", async () => {
+  const message = "Oops... something went wrong, try again 🤕";
+
+  server.use(
+    rest.get("https://swapi.dev/api/people/1", (req, res, ctx) => {
+      return res(ctx.status(500));
+    })
+  );
+  render(<App />);
+  const errorElement = await screen.findByText(message);
+  expect(errorElement).toBeInTheDocument();
+});
+
+test("Handling 418 Error message", async () => {
+  const message = "418 I'm a tea pot 🫖, silly";
+
+  server.use(
+    rest.get("https://swapi.dev/api/people/1", (req, res, ctx) => {
+      return res(ctx.status(418));
+    })
+  );
+  render(<App />);
+  const errorElement = await screen.findByText(message);
+  expect(errorElement).toBeInTheDocument();
+});
